@@ -8,12 +8,16 @@ export const SocketProvider = ({ children }) => {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
+   
+    const backend_url = 'https://realtime-project-9e5l.onrender.com';
     
-    const targetServerAddress = window.location.hostname === 'localhost' 
+    
+    const server_address = window.location.hostname === 'localhost' 
       ? 'http://localhost:3000' 
-      : window.location.origin;
+      : backend_url;
 
-    const newSocket = io(targetServerAddress, {
+    const newSocket = io(server_address, {
+      transports: ['websocket', 'polling'], 
       reconnectionAttempts: 10,
       reconnectionDelay: 1000,
     });
