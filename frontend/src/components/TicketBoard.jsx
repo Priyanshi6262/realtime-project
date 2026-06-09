@@ -2,13 +2,23 @@ import React, { useState, useEffect, useContext } from 'react';
 import { SocketContext } from '../context/SocketContext';
 import TicketRow from './TicketRow';
 
+
+import styles from './TicketBoard.module.css';
+
+
+const AVAILABLE_AGENTS = [
+  { id: 'agent_a', label: 'Agent A' },
+  { id: 'agent_b', label: 'Agent B' },
+  { id: 'agent_c', label: 'Agent C' } 
+];
+
 export default function TicketBoard() {
   const context = useContext(SocketContext);
   const [tickets, setTickets] = useState([]);
   const [newTitle, setNewTitle] = useState('');
   
   
-  const [agentName, setAgentName] = useState('Agent A');
+  const [agentName, setAgentName] = useState(AVAILABLE_AGENTS[0].label);
 
   const socket = context ? context.socket : null;
 
@@ -68,85 +78,52 @@ export default function TicketBoard() {
   };
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif' }}>
+    <div className={styles.container}>
       
       
-      <div style={{ 
-        marginBottom: '24px', 
-        padding: '16px', 
-        backgroundColor: '#f0fdf4', 
-        borderRadius: '8px', 
-        border: '1px solid #bbf7d0', 
-        display: 'flex',
-        alignItems: 'center',
-        gap: '16px'
-      }}>
-        <span style={{ fontSize: '14px', fontWeight: '500', color: '#166534' }}>
-           Choose Active Profile Identity:
+      <div className={styles.identityPanel}>
+        <span className={styles.panelLabel}>
+          Choose Active Profile Identity:
         </span>
         
-        <button 
-          type="button"
-          onClick={() => setAgentName('Agent A')}
-          style={{
-            padding: '6px 16px',
-            backgroundColor: agentName === 'Agent A' ? '#16a34a' : '#ffffff',
-            color: agentName === 'Agent A' ? '#ffffff' : '#374151',
-            border: '1px solid #d1d5db',
-            borderRadius: '6px',
-            cursor: 'pointer',
-            fontWeight: '600',
-            fontSize: '13px',
-            boxShadow: agentName === 'Agent A' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none'
-          }}
-        >
-          Agent A
-        </button>
+        
+        {AVAILABLE_AGENTS.map((agent) => (
+          <button 
+            key={agent.id}
+            type="button"
+            onClick={() => setAgentName(agent.label)}
+            className={agentName === agent.label ? styles.agentButtonActive : styles.agentButton}
+          >
+            {agent.label}
+          </button>
+        ))}
 
-        <button 
-          type="button"
-          onClick={() => setAgentName('Agent B')}
-          style={{
-            padding: '6px 16px',
-            backgroundColor: agentName === 'Agent B' ? '#16a34a' : '#ffffff',
-            color: agentName === 'Agent B' ? '#ffffff' : '#374151',
-            border: '1px solid #d1d5db',
-            borderRadius: '6px',
-            cursor: 'pointer',
-            fontWeight: '600',
-            fontSize: '13px',
-            boxShadow: agentName === 'Agent B' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none'
-          }}
-        >
-          Agent B
-        </button>
-
-        <div style={{ marginLeft: 'auto', fontSize: '14px', color: '#374151' }}>
-          Acting Workspace Label: <strong style={{ color: '#16a34a' }}>{agentName}</strong>
+        <div className={styles.workspaceLabel}>
+          Acting Workspace Label: <strong className={styles.workspaceName}>{agentName}</strong>
         </div>
       </div>
 
-      <form onSubmit={handleCreateTicket} style={{ marginBottom: '32px', display: 'flex', gap: '12px' }}>
+      <form onSubmit={handleCreateTicket} className={styles.ticketForm}>
         <input 
           type="text" 
           value={newTitle} 
           onChange={(e) => setNewTitle(e.target.value)}
           placeholder="Type ticket problem summary details here..."
-          style={{ padding: '10px 14px', width: '360px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '14px' }}
+          className={styles.ticketInput}
         />
-        <button type="submit" style={{ padding: '10px 18px', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '14px' }}>
+        <button type="submit" className={styles.submitButton}>
           File Ticket
         </button>
       </form>
 
-      <div style={{ backgroundColor: '#ffffff', borderRadius: '8px', border: '1px solid #e5e7eb', overflow: 'hidden', boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '14px' }}>
+      <div className={styles.boardTableWrapper}>
+        <table className={styles.ticketTable}>
           <thead>
-            <tr style={{ backgroundColor: '#f9fafb', borderBottom: '2px solid #e5e7eb' }}>
-              <th style={{ padding: '14px 16px', fontWeight: '600', color: '#4b5563' }}>ID</th>
-              <th style={{ padding: '14px 16px', fontWeight: '600', color: '#4b5563' }}>Topic Description Summary</th>
-              <th style={{ padding: '14px 16px', fontWeight: '600', color: '#4b5563' }}>Lock Status Presence</th>
-              <th style={{ padding: '14px 16px', fontWeight: '600', color: '#4b5563' }}>Execution Controls</th>
+            <tr className={styles.tableHeaderRow}>
+              <th className={styles.tableHeader}>ID</th>
+              <th className={styles.tableHeader}>Topic Description Summary</th>
+              <th className={styles.tableHeader}>Lock Status Presence</th>
+              <th className={styles.tableHeader}>Execution Controls</th>
             </tr>
           </thead>
           <tbody>
